@@ -1,0 +1,129 @@
+--- oscam-ecm.c
++++ oscam-ecm.c
+@@ -1679,6 +1719,110 @@ int32_t write_ecm_answer(struct s_reader *reader, ECM_REQUEST *er, int8_t rc, ui
+ 	{
+ 		if(!cfg.disablecrccws && !reader->disablecrccws)
+ 		{
++#if 0
++			if(er->caid == 0x098C || er->caid == 0x09C4)
++			{
++				//printf("%x\n", er->ecmlen);
++				uint8_t rt=0;
++				for(uint8_t t=0; t<er->ecmlen; ++t)
++				{
++					switch(t)
++					{
++						case 1:
++							if(er->ecm[0] == 0x80)
++								printf("(EVEN) ");
++							else
++								printf("( ODD) ");
++							break;
++
++						case 3:
++							printf("(ecm_size) ");
++							break;
++
++						case 6:
++							printf(" ");
++							break;
++
++						case 7:
++							printf("(ird_ecm_len) ");
++							break;
++
++						case 11:
++							printf("(TIME) ");
++							break;
++
++						case 13:
++							printf(" ");
++							break;
++
++						case 22:
++							printf(" ");
++							break;
++
++						case 23:
++							printf(" ");
++							break;
++
++						case 31:
++							printf("(CW) ");
++							break;
++
++						case 37:
++							printf(" ");
++							break;
++
++						case 38:
++							printf("(ird_ecm_csum) ");
++							break;
++
++						case 39:
++							printf("(card_ecm_len) ");
++							break;
++
++						case 40:
++							printf("(NANO)");
++							rt = er->ecm[40];
++							break;
++
++						case 41:
++							printf("(LEN) ");
++							rt = er->ecm[40];
++							break;
++
++						default:
++							break;
++					}
++
++					if(rt)
++					{
++						if(t == (41+rt))
++							printf(" ");
++
++						if(t == (41+rt+1))
++							printf("(NANO)");
++
++						if(t == (41+rt+2))
++							printf("(LEN) ");
++
++						if(t == (41+rt+3))
++							printf("(key_selector) ");
++
++						if(t == (41+rt+4))
++							printf("(smartcard_type) ");
++					}
++
++					printf("%02X", er->ecm[t] & 0xff);
++				}
++				printf("\n\nDCW=");
++				for(int b=0; b<16; ++b)
++				{	if(b==8)
++						printf(" ");
++					printf("%02X", cw[b] & 0xff);
++				}
++				printf("\n\n\n\n");
++			}
++#endif
++
+ 			if(!(chk_if_ignore_checksum(er, &cfg.disablecrccws_only_for) + chk_if_ignore_checksum(er, &reader->disablecrccws_only_for)))
+ 			{
+ 				uint8_t i, c;
+@@ -2848,15 +3026,6 @@ int32_t ecmfmt(char *result, size_t size, uint16_t caid, uint16_t onid, uint32_t
+ 	return s;
+ }
+ 
+-uint8_t checkCWpart(uint8_t *cw, int8_t part)
+-{
+-	uint8_t eo = part ? 8 : 0;
+-	int8_t i;
+-	for(i = 0; i < 8; i++)
+-		if(cw[i + eo]) { return 1; }
+-	return 0;
+-}
+-
+ int32_t format_ecm(ECM_REQUEST *ecm, char *result, size_t size)
+ {
+ 	char ecmd5hex[(16*2)+1];

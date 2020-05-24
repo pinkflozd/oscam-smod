@@ -435,8 +435,6 @@ tr.online td {background-color:#BFA}
 tr.offline td {}
 tr.expired td {background-color:#FBA}
 tr.connected td {background-color:#FFA}
-tr.r_undefined td {background-color:#FFA}
-tr.r_connected td {background-color:#BCFFAD}
 tr.disabled td {}
 tr.disabled td:first-child img.icon,
 tr.disabledreader td:first-child img.icon {
@@ -1795,10 +1793,6 @@ div.extract {
 
 .sorting-asc, .sorting-desc {background-color:#aaa}
 .readers .td-sorting,
-.readers tr.r_undefined .td-sorting {background-color: #EAEA95}
-.readers tr.r_connected .td-sorting {background-color: #A6EA95}
-.readers tr.enabledreader .td-sorting {background-color: #D9D9D9}
-.readers tr.disabledreader .td-sorting {background-color: #D9D9D9}
 .users tr.offline .td-sorting,
 .users tr.disabled .td-sorting,
 .statsbalance .td-sorting {background-color: #d9d9d9}

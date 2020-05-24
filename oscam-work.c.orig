@@ -425,7 +425,6 @@ void *work_thread(void *ptr)
 							int32_t hide_count;
 							int32_t cardsize;
 							int32_t ii, uu=0;
-							struct s_clientmsg *clientmsg;
 							LLIST **sharelist = get_and_lock_sharelist();
 							LLIST *sharelist2 = ll_create("hidecards-sharelist");
 
@@ -459,53 +458,8 @@ void *work_thread(void *ptr)
 								}
 							}
 
-							if(cs_malloc(&clientmsg, sizeof(struct s_clientmsg)))
-							{
-								// len=37, cmd=7 00 00 00 7b 7f 7f 82 00 09 8c 00 01 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 01 06 32 f5 83 15 f8 17 ec
-								memcpy(clientmsg->msg, "\x00\x00\x00\x7b\x7f\x7f\x82\x00\x0f\xff\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01\x06\x32\xf5\x83\x15\xf8\x17\xec", 37);
-								clientmsg->len = 37;
-								clientmsg->cmd = MSG_NEW_CARD;
-								cc_cmd_send(cl, clientmsg->msg, clientmsg->len, clientmsg->cmd);
-							}
-
-							NULLFREE(cardarray);
-						}
-					}
-					add_job(cl, ACTION_CLIENT_UNHIDECARDS, NULL, 0);
-#endif
-					break;
-				} // case ACTION_CLIENT_HIDECARDS
-				case ACTION_CLIENT_UNHIDECARDS:
-				{
-#ifdef CS_ANTICASC
-					if(config_enabled(MODULE_CCCSHARE))
-					{
-						int32_t hidetime = (cl->account->acosc_penalty_duration == -1 ? cfg.acosc_penalty_duration : cl->account->acosc_penalty_duration);
-						if(hidetime)
-						{
-							int32_t hide_count;
-							int32_t cardsize;
-							int32_t ii, uu=0;
-							LLIST **sharelist = get_and_lock_sharelist();
-							LLIST *sharelist2 = ll_create("hidecards-sharelist");
-
-							for(ii = 0; ii < CAID_KEY; ii++)
-							{
-								if(sharelist[ii])
-								{
-									ll_putall(sharelist2, sharelist[ii]);
-								}
-							}
-
-							unlock_sharelist();
-
-							struct cc_card **cardarray = get_sorted_card_copy(sharelist2, 0, &cardsize);
-							ll_destroy(&sharelist2);
-
+							cs_sleepms(hidetime * 1000);
 							uu = 0;
-
-							while (cl->unhidecards_start_time > time(NULL))
-								cs_sleepms(1000);
 
 							for(ii = 0; ii < cardsize; ii++)
 							{
@@ -525,12 +479,11 @@ void *work_thread(void *ptr)
 							}
 
 							NULLFREE(cardarray);
-							cl->unhidecards_start_time = 0;
 						}
 					}
 #endif
 					break;
-				} // case ACTION_CLIENT_UNHIDECARDS
+				} // case ACTION_CLIENT_HIDECARDS
 
 			} // switch
 

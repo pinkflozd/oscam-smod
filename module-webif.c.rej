@@ -1,0 +1,80 @@
+--- module-webif.c
++++ module-webif.c
+@@ -3858,11 +3960,43 @@ static void webif_add_client_proto(struct templatevars *vars, struct s_client *c
+ 		struct cc_data *cc = cl->cc;
+ 		if(cc && *cc->remote_version && *cc->remote_build)
+ 		{
++			memset(mcs_ver, 0, sizeof(mcs_ver));
++			mcs_ver[0] = 0x30; // version 0
++
++			if (cc->multics_version[0] | (cc->multics_version[1] << 8))
++			{
++				switch(cc->multics_mode)
++				{
++					case 2:
++						snprintf(mcs_ver, sizeof(mcs_ver), "%d", cc->multics_version[0] | (cc->multics_version[1] << 8));
++						break;
++
++					case 3:
++						snprintf(mcs_ver, sizeof(mcs_ver), "%d_HB", cc->multics_version[0] | (cc->multics_version[1] << 8));
++						break;
++
++					default:
++						break;
++				}
++			}
++
+ 			tpl_printf(vars, TPLADD, "CLIENTPROTO", "%s (%s-%s)", proto, cc->remote_version, cc->remote_build);
+ 			tpl_printf(vars, TPLADD, "CLIENTPROTOSORT", "%s (%s-%s)", proto, cc->remote_version, cc->remote_build);
+ 			if(cccam_client_multics_mode(cl))
+ 			{
+-				tpl_printf(vars, TPLADD, "CLIENTPROTOTITLE", "Multics, revision r%d", cc->multics_version[0] | (cc->multics_version[1] << 8));
++				switch(cc->multics_mode)
++				{
++					case 2:
++						tpl_printf(vars, TPLADD, "CLIENTPROTOTITLE", "Multics, revision r%s", mcs_ver);
++						break;
++
++					case 3:
++						tpl_printf(vars, TPLADD, "CLIENTPROTOTITLE", "Multics Hellboy, revision r%s", mcs_ver);
++						break;
++
++					default:
++						break;
++				}
+ 			}
+ 			else
+ 			{
+@@ -3879,26 +4013,25 @@ static void webif_add_client_proto(struct templatevars *vars, struct s_client *c
+ 				switch(is_other_proto)
+ 				{
+ 					case 1:
+-						snprintf(picon_name, sizeof(picon_name) / sizeof(char) - 1, "%s_r_%d", proto, cc->multics_version[0] | (cc->multics_version[1] << 8));
++						snprintf(picon_name, sizeof(picon_name) / sizeof(char) - 1, "%s_r_%s", proto, mcs_ver);
+ 						if(picon_exists(picon_name))
+ 						{
+ 							if (!apicall)
+ 							{
+-								tpl_addVar(vars, TPLADD, "CCA", (char *)proto);
++								tpl_addVar(vars, TPLADD, "CCA", proto);
+ 								tpl_addVar(vars, TPLADD, "CCB", "r");
+-								tpl_printf(vars, TPLADD, "CCC", "%d", cc->multics_version[0] | (cc->multics_version[1] << 8));
++								tpl_printf(vars, TPLADD, "CCC", "%s", mcs_ver);
+ 								tpl_addVar(vars, TPLADD, "CCD", "");
+ 								tpl_addVar(vars, TPLADD, "CLIENTPROTO", tpl_getTpl(vars, "PROTOCCCAMPIC"));
+ 							}
+ 							else
+ 							{
+-								tpl_printf(vars, TPLADDONCE, "PROTOICON", "%s_r_%d",(char *)proto, cc->multics_version[0] | (cc->multics_version[1] << 8));
+-							}
++								tpl_printf(vars, TPLADDONCE, "PROTOICON", "%s_r_%s", proto, mcs_ver);							}
+ 						}
+ 						else
+ 						{
+-							tpl_printf(vars, TPLADD, "CLIENTPROTOTITLE", "Multics, revision r%d missing icon: IC_%s_r_%d.tpl",
+-								cc->multics_version[0] | (cc->multics_version[1] << 8), proto, cc->multics_version[0] | (cc->multics_version[1] << 8));
++							tpl_printf(vars, TPLADD, "CLIENTPROTOTITLE", "Multics, revision r%s missing icon: IC_%s_r_%s.tpl",
++								mcs_ver, proto, mcs_ver);
+ 						}
+ 						break;
+ 

@@ -1,0 +1,11 @@
+--- webif/include/css.css
++++ webif/include/css.css
+@@ -363,6 +363,8 @@ tr.online td {background-color:#BFA}
+ tr.offline td {}
+ tr.expired td {background-color:#FBA}
+ tr.connected td {background-color:#FFA}
++tr.r_undefined td {background-color:#FFA}
++tr.r_connected td {background-color:#BCFFAD}
+ /* color of button for readers and user row in readers.html and userconfig.html*/
+ tr.disabled td {}
+ tr.disabled td:first-child img.icon,

@@ -22,6 +22,7 @@
 			<TR><TD><A>Max ECM count:</A></TD><TD><input name="lb_max_ecmcount" class="short" type="text" maxlength="5" value="##LBMAXECEMCOUNT##"></TD></TR>
 			<TR><TD><A>Retry limit:</A></TD><TD><input name="lb_retrylimit" class="withunit short" type="text" maxlength="5" value="##LBRETRYLIMIT##"> ms</TD></TR>
 			<TR><TD><A>Special retry limit per caid:</A></TD><TD><input name="lb_retrylimits" type="text" maxlength="320" value="##LBRETRYLIMITS##"></TD></TR>
+			<TR><TD>lb_reopen_percent:</TD><TD><input name="lb_reopen_percent" class="withunit short" type="text" maxlength="3" value="##LBREOPENPERCENT##"> % reopen reader if ((ecm_count / fail_factor) > lb_reopen_percent)</TD></TR>
 			<TR><TD><A>Time to reopen:</A></TD><TD><input name="lb_reopen_seconds" class="withunit short" type="text" maxlength="5" value="##LBREOPENSECONDS##"> s</TD></TR>
 			<TR><TD><A>Hours to cleanup older than:</A></TD><TD><input name="lb_stat_cleanup" class="withunit short" type="text" maxlength="5" value="##LBCLEANUP##"> h</TD></TR>
 			<TR><TD><A>Reopen Invalid:</A></TD><TD><input name="lb_reopen_invalid" value="0" type="hidden"><input name="lb_reopen_invalid" value="1" type="checkbox" ##LBREOPENINVALID##><label></label></TD></TR>

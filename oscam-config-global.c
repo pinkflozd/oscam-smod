@@ -306,6 +306,8 @@ void global_fixups_fn(void *UNUSED(var))
 #ifdef WITH_LB
 	if(cfg.lb_save > 0 && cfg.lb_save < 100) { cfg.lb_save = 100; }
 	if(cfg.lb_nbest_readers < 2) { cfg.lb_nbest_readers = DEFAULT_NBEST; }
+	if(cfg.lb_reopen_percent < 1) { cfg.lb_reopen_percent = 1; }
+	if(cfg.lb_reopen_percent > 100) { cfg.lb_reopen_percent = 100; }
 #endif
 }
 
@@ -368,6 +370,7 @@ static const struct config_list global_opts[] =
 	DEF_OPT_INT32("lb_nfb_readers"                 , OFS(lb_nfb_readers)                , DEFAULT_NFB),
 	DEF_OPT_INT32("lb_min_ecmcount"                , OFS(lb_min_ecmcount)               , DEFAULT_MIN_ECM_COUNT),
 	DEF_OPT_INT32("lb_max_ecmcount"                , OFS(lb_max_ecmcount)               , DEFAULT_MAX_ECM_COUNT),
+	DEF_OPT_INT32("lb_reopen_percent"              , OFS(lb_reopen_percent)             , DEFAULT_REOPEN_PERCENT),
 	DEF_OPT_INT32("lb_reopen_seconds"              , OFS(lb_reopen_seconds)             , DEFAULT_REOPEN_SECONDS),
 	DEF_OPT_INT8("lb_reopen_invalid"               , OFS(lb_reopen_invalid)             , 1),
 	DEF_OPT_INT8("lb_force_reopen_always"          , OFS(lb_force_reopen_always)        , 0),
